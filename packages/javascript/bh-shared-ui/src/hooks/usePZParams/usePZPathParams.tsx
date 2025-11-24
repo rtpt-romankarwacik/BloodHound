@@ -17,8 +17,10 @@
 import { useLocation, useParams } from 'react-router-dom';
 import {
     certificationsPath,
+    detailsPath,
     historyPath,
     labelsPath,
+    membersPath,
     privilegeZonesPath,
     rulesPath,
     savePath,
@@ -55,6 +57,20 @@ export const usePZPathParams = () => {
     const tagSummaryLink = (tagId: number | string, type?: typeof tagType) =>
         `/${privilegeZonesPath}/${type ?? tagType}/${tagId}/${summaryPath}`;
 
+    const tagDetailsLink = (tagId: number | string, type?: typeof tagType) =>
+        `/${privilegeZonesPath}/${type ?? tagType}/${tagId}/${detailsPath}`;
+    const ruleDetailsLink = (tagId: number | string, ruleId: number | string, type?: typeof tagType) =>
+        `/${privilegeZonesPath}/${type ?? tagType}/${tagId}/${rulesPath}/${ruleId}/${detailsPath}`;
+    const objectDetailsLink = (
+        tagId: number | string,
+        objectId: number | string,
+        ruleId?: number | string,
+        type?: typeof tagType
+    ) =>
+        ruleId
+            ? `/${privilegeZonesPath}/${type ?? tagType}/${tagId}/${rulesPath}/${ruleId}/${membersPath}/${objectId}/${detailsPath}`
+            : `/${privilegeZonesPath}/${type ?? tagType}/${tagId}/${membersPath}/${objectId}/${detailsPath}`;
+
     return {
         tagId,
         zoneId,
@@ -76,5 +92,8 @@ export const usePZPathParams = () => {
         ruleCreateLink,
         ruleEditLink,
         tagSummaryLink,
+        tagDetailsLink,
+        ruleDetailsLink,
+        objectDetailsLink,
     };
 };
