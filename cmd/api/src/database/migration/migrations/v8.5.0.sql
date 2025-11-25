@@ -17,10 +17,10 @@
 -- OpenGraph Search feature flag
 INSERT INTO feature_flags (created_at, updated_at, key, name, description, enabled, user_updatable)
 VALUES (current_timestamp,
-    current_timestamp, 
+    current_timestamp,
     'opengraph_search',
     'OpenGraph Search',
-    'Enable OpenGraph Search', 
+    'Enable OpenGraph Search',
     false,
     false)
 ON CONFLICT DO NOTHING;
@@ -38,3 +38,37 @@ CREATE TABLE IF NOT EXISTS schema_extensions (
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     PRIMARY KEY (id)
 );
+
+
+-- Individual findings. ie T0WriteOwner, T0ADCSESC1, T0DCSync
+CREATE TABLE IF NOT EXISTS schema_relationship_findings (
+    id serial not null,
+    extension_id integer not null,
+    relationship_kind_id integer,
+    environment_id integer not null,
+
+    name text not null,
+    display_name text not null,
+    created_at timestamp with time zone default current_timestamp,
+    primary key (id),
+    unique(name)
+);
+
+-- Remediation content table with FK to findings
+CREATE TABLE IF NOT EXISTS schema_remediations (
+    id SERIAL PRIMARY KEY,
+    finding_id INTEGER NOT NULL,
+    short_description TEXT,
+    long_description TEXT,
+    short_remediation TEXT,
+    long_remediation TEXT,
+    CONSTRAINT unique_finding_remediation UNIQUE (finding_id)
+);
+
+CREATE TABLE schema_environments (
+    id SERIAL PRIMARY KEY,
+    extension_id INTEGER NOT NULL,
+    environment_kind_id INTEGER NOT NULL,
+    source_kind_id INTEGER NOT NULL,
+    unique(extension_id,environment_kind_id,source_kind_id)
+  );
